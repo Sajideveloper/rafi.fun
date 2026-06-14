@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sajid's Fun Arcade</title>
+    <!-- Importing a clean, playful font similar to Neal.fun -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="family">
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --border-color: #000000;
+            --accent-color: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header Style like Neal.fun */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* The Game Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* Neal.fun style Cards */
+        .game-card {
+            background: var(--card-bg);
+            border: 4px solid var(--border-color);
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 8px 0 var(--border-color);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        /* Satisfying pop out hover effect */
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 0 var(--border-color);
+        }
+
+        .game-card:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 var(--border-color);
+        }
+
+        .game-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .game-card h2 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .game-card p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* Individual Game Views (Hidden by default) */
+        .game-view {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border: 4px solid var(--border-color);
+            border-radius: 28px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 12px 0 var(--border-color);
+            position: relative;
+        }
+
+        /* Action Buttons */
+        .btn {
+            background: #fff;
+            border: 3px solid #000;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #000;
+            transition: all 0.1s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #000;
+        }
+
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #000;
+        }
+
+        .back-btn {
+            margin-bottom: 25px;
+            background: #ff4757;
+            color: white;
+        }
+
+        /* Game Custom Layouts */
+        .click-zone {
+            width: 100%;
+            height: 200px;
+            background: #f1f2f6;
+            border: 3px dashed #ccc;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            margin: 20px 0;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HOME PAGE HUB -->
+    <div id="home-page" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <header>
+            <h1>SAJID.FUN</h1>
+            <p>A collection of chaotic mini-games</p>
+        </header>
+
+        <div class="grid-container">
+            <!-- Card 1: CPS Tester -->
+            <div class="game-card" onclick="switchView('cps-game')">
+                <div class="game-icon">⚡</div>
+                <h2>CPS Tester</h2>
+                <p>How fast can you click in 5 seconds?</p>
+            </div>
+
+            <!-- Card 2: Stimulation Clicker -->
+            <div class="game-card" onclick="switchView('clicker-game')">
+                <div class="game-icon">👆</div>
+                <h2>Stimulation Clicker</h2>
+                <p>Click, upgrade, and break the system.</p>
+            </div>
+
+            <!-- Card 3: Placeholder for Future Games -->
+            <div class="game-card" style="opacity: 0.6; cursor: not-allowed; border-style: dashed;">
+                <div class="game-icon">🔒</div>
+                <h2>Mystery Game</h2>
+                <p>Coming soon in the next update...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- GAME 1: CPS TESTER VIEW -->
+    <div id="cps-game" class="game-view">
+        <button class="btn back-btn" onclick="switchView('home-page')">← Back to Hub</button>
+        <h2>⚡ CPS Tester</h2>
+        <p>Click the zone below as fast as possible once the timer starts!</p>
+        
+        <div class="score-display">Clicks: <span id="cps-clicks">0</span></div>
+        <div id="cps-timer" style="font-size: 1.2rem; margin-bottom: 10px;">Time Left: 5.0s</div>
+        
+        <div id="cps-zone" class="click-zone" onclick="registerCPSClick()">
+            CLICK HERE TO START
+        </div>
+        
+        <button class="btn" onclick="resetCPS()">Reset Test</button>
+    </div>
+
+
+    <!-- GAME 2: STIMULATION CLICKER VIEW -->
+    <div id="clicker-game" class="game-view">
+        <button class="btn back-btn" onclick="switchView('home-page')">← Back to Hub</button>
+        <h2>👆 Stimulation Clicker</h2>
+        
+        <div class="score-display">🔋 Energy: <span id="clicker-score">0</span></div>
+        
+        <div class="click-zone" onclick="registerClickerClick()" style="background: #e3fafc; border-color: #1098ad;">
+            TAP FOR ENERGY
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button id="upgrade-btn" class="btn" onclick="buyUpgrade()">
+                Buy Multiplier (Cost: 10)
+            </button>
+            <p id="multiplier-status" style="margin-top: 10px; color: #666;">Current Multiplier: x1</p>
+        </div>
+    </div>
+
+    <script>
+        // NAVIGATION SYSTEM
+        function switchView(viewId) {
+            // Hide all views & home page
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('cps-game').style.display = 'none';
+            document.getElementById('clicker-game').style.display = 'none';
+            
+            // Show the selected one
+            if (viewId === 'home-page') {
+                document.getElementById('home-page').style.display = 'flex';
+            } else {
+                document.getElementById(viewId).style.display = 'block';
+            }
+        }
+
+        // --- CPS TESTER CODE ---
+        let cpsClicks = 0;
+        let cpsTimeLeft = 5.0;
+        let cpsActive = false;
+        let cpsInterval;
+
+        function registerCPSClick() {
+            if (cpsTimeLeft <= 0) return;
+            
+            if (!cpsActive) {
+                cpsActive = true;
+                document.getElementById('cps-zone').innerText = "TAP TAP TAP!";
+                cpsInterval = setInterval(() => {
+                    cpsTimeLeft -= 0.1;
+                    document.getElementById('cps-timer').innerText = `Time Left: ${Math.max(0, cpsTimeLeft).toFixed(1)}s`;
+                    
+                    if (cpsTimeLeft <= 0) {
+                        clearInterval(cpsInterval);
+                        let finalCps = (cpsClicks / 5).toFixed(1);
+                        document.getElementById('cps-zone').innerText = `Finished! Your CPS: ${finalCps}`;
+                    }
+                }, 100);
+            }
+            
+            cpsClicks++;
+            document.getElementById('cps-clicks').innerText = cpsClicks;
+        }
+
+        function resetCPS() {
+            clearInterval(cpsInterval);
+            cpsClicks = 0;
+            cpsTimeLeft = 5.0;
+            cpsActive = false;
+            document.getElementById('cps-clicks').innerText = "0";
+            document.getElementById('cps-timer').innerText = "Time Left: 5.0s";
+            document.getElementById('cps-zone').innerText = "CLICK HERE TO START";
+        }
+
+        // --- STIMULATION CLICKER CODE ---
+        let energyScore = 0;
+        let multiplier = 1;
+        let upgradeCost = 10;
+
+        function registerClickerClick() {
+            energyScore += multiplier;
+            document.getElementById('clicker-score').innerText = energyScore;
+        }
+
+        function buyUpgrade() {
+            if (energyScore >= upgradeCost) {
+                energyScore -= upgradeCost;
+                multiplier++;
+                upgradeCost = Math.floor(upgradeCost * 1.8);
+                
+                document.getElementById('clicker-score').innerText = energyScore;
+                document.getElementById('upgrade-btn').innerText = `Buy Multiplier (Cost: ${upgradeCost})`;
+                document.getElementById('multiplier-status').innerText = `Current Multiplier: x${multiplier}`;
+            } else {
+                alert("Not enough Energy! Keep clicking!");
+            }
+        }
+    </script>
+</body>
+</html>
